@@ -1,95 +1,83 @@
-# Chemical Manufacturing Skills for Claude
+# Claude PFD Generator
 
-By Scott Duncan. Reach me on LinkedIn here: https://www.linkedin.com/in/s-r-duncan/. View my website here: https://scottduncanai.com/
+By Scott Duncan. Find me on [LinkedIn](https://www.linkedin.com/in/scottduncanai/) or at [scottduncanai.com](https://scottduncanai.com/).
 
-A collection of [Claude Skills](https://code.claude.com/docs/en/skills) that encode chemical manufacturing engineering practices so that Claude produces work a practicing engineer would actually accept, rather than something that merely looks plausible.
+**Describe a process in plain English. Get an editable process flow diagram.**
 
-Ask a general-purpose model for a PFD and you get a steam coil above the liquid level, an open control loop, a tag hidden under a valve body. A skill brings the standards and the review checklist into the session so those defects get caught first.
+Claude PFD Generator is a [Claude skill](https://code.claude.com/docs/en/skills) that turns a process description into a conceptual PFD. It guides Claude through laying out the equipment, drawing process streams and control loops, and checking the result before delivery. No coding experience is required.
 
-![Conceptual PFD of the C-201 depropanizer: distillation column with overhead condenser, reflux drum and pump, and kettle reboiler, with reflux flow control and a reboiler temperature-to-steam cascade](skills/pfd-generator/examples/c-201-distillation-column.png)
+![Conceptual PFD of the C-201 depropanizer with an overhead condenser, reflux drum and pump, and kettle reboiler](skills/pfd-generator/examples/c-201-distillation-column.png)
 
-*Claude's output using the pfd-generator skill. A PFD of a depropanizer unit which includes process flows and control logic. Delivered as an [editable SVG](skills/pfd-generator/examples/c-201-distillation-column.svg).*
+*A depropanizer PFD generated with the skill, including process flows and control logic. [Open the editable SVG](skills/pfd-generator/examples/c-201-distillation-column.svg).*
 
-## Skills
+## What you get
 
-| Skill | Produces | Triggers on |
-|---|---|---|
-| [`pfd-generator`](skills/pfd-generator) | A conceptual PFD as editable SVG, plus the Python script that generated it | A process description with a request to draw, diagram, sketch, or visualize it; any mention of P&ID, PFD, control loop drawings, or cascade control; a request to edit an existing PFD SVG |
-
-Additional skills will be added over time.
+- An editable SVG with equipment, process streams, instrumentation, and control loops.
+- The Python script that generated the drawing, so Claude can revise it when you request a change.
+- Engineering assumptions and any limitations identified while drawing.
 
 ## Install
 
-Pick whichever matches how you use Claude. The first one needs no terminal, no git, and no coding.
+Choose the option that matches how you use Claude.
 
-### In claude.ai — point and click
+### Claude Code
 
-1. **Download** [`pfd-generator.zip`](https://github.com/ScottDuncanAI/claude-manufacturing-skills/releases/download/skills-latest/pfd-generator.zip). Leave it zipped — that's the format Claude wants.
-2. **Turn the feature on.** In claude.ai, open **Settings → Capabilities** and switch on **Skills** and **Code execution and file creation**.
-3. **Upload it.** Go to **Customize → Skills**, click **+ → Create skill**, choose the zip, and toggle the skill on.
+1. Click **Code → Download ZIP** on this repository and extract the ZIP.
+2. Open the extracted `skills` folder. Copy `pfd-generator` into `.claude/skills/` in your home folder. Create the folders if they do not exist. To install it for a single project, use that project's `.claude/skills/` folder instead.
+3. Restart Claude Code and open the folder where you want to save your drawings.
 
-The same zip works in the Claude desktop app. You only do this once.
+Claude can help install the Python packages listed in `skills/pfd-generator/scripts/requirements.txt` when needed.
 
-### In Claude Code — as a plugin
+You can also install through Claude Code's plugin commands:
 
-Two commands, and `git pull` on your side keeps it current:
-
-```
+```text
 /plugin marketplace add ScottDuncanAI/claude-manufacturing-skills
-/plugin install pfd-generator@chem-mfg-skills
+/plugin install pfd-generator@claude-pfd-generator
 ```
 
-Use `/plugin install chem-mfg-skills-all@chem-mfg-skills` to get every skill in the collection, including ones added later.
+### Claude.ai
 
-### In Claude Code — by copying the folder
+1. Download [pfd-generator.zip](https://github.com/ScottDuncanAI/claude-manufacturing-skills/releases/download/skills-latest/pfd-generator.zip). Leave it zipped.
+2. In **Settings → Capabilities**, enable **Skills** and **Code execution and file creation**.
+3. Go to **Customize → Skills**, select **+ → Create skill**, upload the ZIP, and enable it.
 
-For yourself, or for a project so everyone in that repo gets it:
+## Draw your first PFD
 
-```bash
-cp -r skills/pfd-generator ~/.claude/skills/            # just you
-cp -r skills/pfd-generator <your-project>/.claude/skills/   # the whole repo
+Once the skill is installed, type a process description into Claude:
+
+> Draw a PFD of a steam-heated, agitated tank with temperature and level control.
+
+Claude uses the skill when your request matches its description. It may ask questions about the process before drawing.
+
+Open the SVG in your browser and review the equipment, streams, and controls. If a change is needed, describe it in the same conversation. The drawing's labels are editable text.
+
+For a guided exercise, follow [Start here](https://scottduncanai.com/start-here#sd-pfd).
+
+## How it works
+
+The skill gives Claude a drawing workflow, engineering conventions, and reusable SVG components. Claude plans the layout, generates the drawing with Python, and checks it for problems such as overlapping labels, crossed process lines, incorrect elevations, and incomplete control loops.
+
+The skill instructs Claude to render and inspect the drawing, make corrections, and repeat. If rendering is unavailable, Claude must say that the drawing has not been visually checked.
+
+## Repository layout
+
+```text
+.claude-plugin/marketplace.json       Claude Code plugin listing
+skills/pfd-generator/
+  SKILL.md                           Drawing instructions
+  references/                        Instrumentation and layout conventions
+  scripts/                           SVG components and Python dependencies
+  examples/                          Example PFD and editable SVG
 ```
 
-Restart Claude Code after copying. Some skills carry Python dependencies — check for a `scripts/requirements.txt` inside the skill folder.
+## Limits
 
-## Drawing your first PFD
+The output is a conceptual PFD. It is not an issued-for-design P&ID, does not size equipment or relief devices, and does not perform hazard analysis. A qualified engineer must review the drawing before relying on it.
 
-Simply open Claude and describe the process you'd like depicted in a PFD. The skill will load automatically, there's no need to say "use the PFD generator skill to..). Example:
+## Contributing
 
-> Draw me a PFD for a jacketed batch reactor. Steam to the jacket on temperature control, cascaded from the batch temperature to the jacket outlet. Level indication on the reactor, agitator, and a bottoms transfer pump.
-
-Claude will ask a question or two about anything that changes the drawing, then hand back an SVG. Open it in a browser, or drop it into PowerPoint, Visio, or Illustrator — every tag and note is real text, so you can edit labels yourself. It also returns the script that drew it, so "move the steam header down and re-issue" is a small change rather than a redraw.
-
-Then read it like a reviewer. It is a conceptual drawing, and it is your name on anything you pass along.
-
-## What is a skill?
-
-A skill is a folder containing a `SKILL.md` file with a short YAML header and a set of instructions. Claude reads only the header by default; when the `description` matches what you're doing, it loads the full instructions and any supporting reference files, scripts, or templates in that folder.
-
-Practically: you don't invoke a skill. You describe your problem, and the right expertise loads itself.
-
-## Repo layout
-
-```
-.
-├── .claude-plugin/
-│   └── marketplace.json          plugin catalog — one entry per skill
-├── skills/
-│   └── pfd-generator/
-│       ├── SKILL.md              instructions Claude loads
-│       ├── references/           detail loaded on demand, not up front
-│       ├── scripts/              deterministic code the skill calls
-│       └── examples/             sample output
-└── templates/
-    └── skill-template/           scaffold for a new skill
-```
-
-One folder per skill. `templates/` deliberately sits outside `skills/` so the scaffold never loads as a real skill.
-
-## Adding a skill
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: copy `templates/skill-template/`, write the `description` carefully, add a `marketplace.json` entry and a row in the table above.
+See [CONTRIBUTING.md](CONTRIBUTING.md) to report a drawing issue or improve the generator.
 
 ## License
 
-[MIT](LICENSE). The license covers the skill text and code — it does not transfer engineering judgment, and it does not make the output of these skills correct. Review before use.
+[MIT](LICENSE). The license covers the skill text and code. It does not make generated drawings correct or replace engineering judgment.

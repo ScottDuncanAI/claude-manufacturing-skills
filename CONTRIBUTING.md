@@ -1,50 +1,18 @@
-# Adding a skill
+# Contributing to Claude PFD Generator
 
-## 1. Create the folder
+Contributions should improve the accuracy, readability, or usability of generated PFDs.
 
-```bash
-cp -r templates/skill-template skills/<your-skill-name>
-```
+## Report a drawing issue
 
-Use kebab-case. The folder name and the `name:` field in `SKILL.md` must match exactly.
+Include the process description, the generated SVG, and a short explanation of what is wrong. Use public or synthetic examples rather than confidential plant drawings.
 
-## 2. Write the frontmatter
+For installation problems, include your operating system, the Claude application you use, and the error message.
 
-```yaml
----
-name: relief-valve-sizing
-description: <what it does> ... Use when <the situations that should trigger it>.
----
-```
+## Improve the generator
 
-`description` is the only thing Claude sees before deciding whether to load the skill, so it does the entire job of getting the skill invoked. Write it as **what it does + when to use it**, and name the concrete words a user would actually type — equipment, standards, deliverables, file types. "Helps with relief valves" will never trigger; "Size a pressure relief valve per API 520/521 for fire, blocked outlet, or thermal expansion cases. Use when the user mentions PSV sizing, relief load, or set pressure" will.
+1. Identify whether the change belongs in the drawing workflow, the reference material, or the SVG helper code under `skills/pfd-generator/`.
+2. Make a focused change and explain the engineering reason for it.
+3. Generate a drawing that exercises the change. Inspect the SVG and a rendered preview for equipment placement, process flow, labels, and complete control loops.
+4. Include the example and your checks in the pull request.
 
-## 3. Structure the body
-
-- **`SKILL.md`** — the workflow. Keep it to what's needed every time. Non-negotiable rules first, then numbered steps, then a short "what this does not do" section that states the limits of the deliverable.
-- **`references/`** — lookup tables, standards detail, worked conventions. Loaded on demand, so length is cheap here and expensive in `SKILL.md`.
-- **`scripts/`** — anything deterministic. Code that always runs the same way should be code, not prose Claude re-derives each session. Add `scripts/requirements.txt` if it has dependencies.
-- **`examples/`** — one or two real outputs. These make the repo legible to anyone browsing GitHub.
-
-Two things that separate a skill that works from one that doesn't:
-
-- **Build in a verification step.** Have the skill render, run, or check its own output and iterate — not just produce and stop.
-- **State the limits explicitly.** Every skill here produces conceptual work. Say so inside the skill, so Claude says so to the user.
-
-## 4. Register it
-
-Two edits, both small:
-
-1. Add an entry to the `plugins` array in `.claude-plugin/marketplace.json`, copying the shape of the `pfd-generator` entry (`"source": "./"`, `"skills": ["./skills/<your-skill-name>"]`, `"strict": false`).
-2. Add a row to the skills table in `README.md`.
-
-## 5. Test it
-
-Install locally and confirm it triggers on its own — without you naming the skill:
-
-```
-/plugin marketplace add /path/to/this/repo
-/plugin install <your-skill-name>@chem-mfg-skills
-```
-
-Then, in a fresh session, describe a task it should handle and check that it loads. If it doesn't, the `description` is the problem, not the body.
+Keep the output editable and retain the conceptual-drawing limitations. Do not present generated drawings as approved engineering documents.

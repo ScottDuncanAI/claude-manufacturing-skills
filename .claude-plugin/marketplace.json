@@ -1,34 +1,29 @@
 {
-  "name": "chem-mfg-skills",
-  "description": "Claude Skills for chemical manufacturing and process engineering",
+  "name": "claude-pfd-generator",
+  "description": "Generate conceptual process flow diagrams with Claude as editable SVGs.",
   "owner": {
     "name": "Scott Duncan",
     "email": "srduncan14@gmail.com"
   },
-  "renames": {
-    "pid-generator": "pfd-generator"
-  },
   "plugins": [
     {
-      "name": "chem-mfg-skills-all",
-      "displayName": "Chemical Manufacturing Skills (all)",
-      "source": "./",
-      "skills": ["./skills/"],
-      "strict": false,
-      "description": "Every skill in the collection. Install this to get all current and future skills in one go.",
-      "category": "process-engineering",
-      "tags": ["chemical-engineering", "manufacturing", "process-engineering"],
-      "license": "MIT"
-    },
-    {
       "name": "pfd-generator",
-      "displayName": "P&ID Generator",
+      "displayName": "Claude PFD Generator",
       "source": "./",
-      "skills": ["./skills/pfd-generator"],
+      "skills": [
+        "./skills/pfd-generator"
+      ],
       "strict": false,
-      "description": "Conceptual P&IDs as editable SVG: ISA-5.1 instrumentation, closed control loops, and a layout with no crossed process lines.",
+      "description": "Generate conceptual PFDs from process descriptions, with editable SVG output, instrumentation, and complete control loops.",
       "category": "process-engineering",
-      "tags": ["p&id", "pfd", "diagram", "isa-5.1", "process-control", "svg"],
+      "tags": [
+        "p&id",
+        "pfd",
+        "diagram",
+        "isa-5.1",
+        "process-control",
+        "svg"
+      ],
       "license": "MIT"
     }
   ]
